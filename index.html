@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For Samantha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --crimson:   #8B0000;
+      --rose:      #C2185B;
+      --blush:     #F48FB1;
+      --gold:      #D4AF37;
+      --parchment: #FFF0F5;
+      --deep:      #0d0005;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--deep);
+      overflow: hidden;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: var(--parchment);
+    }
+
+    /* ── Panning nebula ── */
+    #nebula {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 30%, #5c001533 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 70%, #8B000022 0%, transparent 55%),
+        radial-gradient(ellipse 100% 100% at 50% 50%, #1a0010 0%, #0d0005 70%);
+      animation: nebulaShift 30s ease-in-out infinite alternate;
+    }
+    @keyframes nebulaShift {
+      0%   { transform: scale(1)    translateX(0)   translateY(0); }
+      33%  { transform: scale(1.08) translateX(-2%) translateY(1%); }
+      66%  { transform: scale(1.04) translateX(2%)  translateY(-1%); }
+      100% { transform: scale(1.1)  translateX(-1%) translateY(2%); }
+    }
+
+    /* ── Stars ── */
+    #star-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+    /* ── Shooting stars ── */
+    .shooting-star {
+      position: fixed;
+      width: 130px; height: 1.5px;
+      background: linear-gradient(90deg, rgba(255,220,230,0.9), transparent);
+      border-radius: 1px;
+      pointer-events: none; z-index: 2; opacity: 0;
+      animation: shootingStar var(--dur) ease-out var(--delay) infinite;
+    }
+    @keyframes shootingStar {
+      0%   { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+      80%  { opacity: 0.5; }
+      100% { transform: translateX(700px) translateY(700px) rotate(-45deg); opacity: 0; }
+    }
+
+    /* ── Rose petals ── */
+    .petal {
+      position: fixed; pointer-events: none; z-index: 2;
+      width: var(--size); height: var(--size);
+      border-radius: 50% 0 50% 0;
+      background: var(--color); opacity: 0;
+      animation: petalFall var(--dur) ease-in var(--delay) infinite;
+    }
+    @keyframes petalFall {
+      0%   { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0.7; }
+      80%  { opacity: 0.35; }
+      100% { transform: translateY(110vh) translateX(var(--drift)) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── Title card ── */
+    #title-card {
+      position: fixed; inset: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1.5rem;
+      background: radial-gradient(ellipse at center, #1a000d 0%, var(--deep) 70%);
+      animation: titleFade 7s ease forwards;
+      pointer-events: none;
+    }
+    @keyframes titleFade {
+      0%   { opacity: 0; }
+      15%  { opacity: 1; }
+      75%  { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    #title-card h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.3rem, 5vw, 2.8rem);
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-shadow: 0 0 40px #D4AF3766, 0 0 80px #C2185B44;
+      text-align: center;
+      padding: 0 1.5rem;
+      line-height: 1.6;
+    }
+    #title-card p {
+      font-style: italic;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: #F48FB177;
+      letter-spacing: 0.25em;
+    }
+
+    /* ── Crawl stage ── */
+    #stage {
+      position: fixed; inset: 0; z-index: 10;
+      overflow: hidden;
+      perspective: 420px;
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+
+    #crawl {
+      width: min(700px, 92vw);
+      padding-bottom: 32vh;
+      transform-origin: bottom center;
+      transform: rotateX(22deg) translateY(100vh);
+      opacity: 0;
+      animation: crawlScroll 115s linear 7.8s forwards;
+    }
+    @keyframes crawlScroll {
+      0%   { transform: rotateX(22deg) translateY(100vh); opacity: 1; }
+      3%   { opacity: 1; }
+      96%  { opacity: 1; }
+      100% { transform: rotateX(22deg) translateY(-430vh); opacity: 0; }
+    }
+
+    .verse { margin-bottom: 3.8rem; text-align: center; }
+    .verse-label {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.7rem; letter-spacing: 0.45em;
+      color: var(--gold); opacity: 0.55; margin-bottom: 1.1rem;
+    }
+    .verse p {
+      font-size: clamp(1rem, 2.2vw, 1.35rem);
+      line-height: 2; font-weight: 300; font-style: italic;
+      color: var(--parchment);
+      text-shadow: 0 0 24px #C2185B22;
+    }
+    .verse p strong { color: var(--blush); font-style: normal; font-weight: 400; }
+
+    .divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; margin: 1.5rem auto 3.8rem;
+      color: var(--gold); opacity: 0.4; font-size: 1rem; letter-spacing: 0.5em;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; max-width: 130px;
+      height: 1px; background: var(--gold); opacity: 0.35;
+    }
+
+    .finale {
+      text-align: center; margin-top: 4rem; padding-bottom: 12vh;
+    }
+    .finale p {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(0.95rem, 2.5vw, 1.6rem);
+      color: var(--gold); letter-spacing: 0.2em;
+      text-shadow: 0 0 40px #D4AF3766; line-height: 2.2;
+    }
+
+    /* ── Vignette & bottom fade ── */
+    #vignette {
+      position: fixed; inset: 0; z-index: 9; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 35%, #0d000588 100%);
+    }
+    #bottom-fade {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 28vh;
+      z-index: 11; pointer-events: none;
+      background: linear-gradient(to top, var(--deep) 0%, transparent 100%);
+    }
+
+    /* ── Controls ── */
+    #controls {
+      position: fixed; bottom: 1.4rem; right: 1.4rem;
+      z-index: 30; display: flex; gap: 0.6rem; align-items: center;
+    }
+    .ctrl-btn {
+      background: rgba(13,0,5,0.85);
+      border: 1px solid #D4AF3744;
+      color: var(--gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem; letter-spacing: 0.12em;
+      padding: 0.45rem 0.9rem;
+      cursor: pointer; border-radius: 2px;
+      transition: all 0.3s; opacity: 0.65;
+      backdrop-filter: blur(4px);
+    }
+    .ctrl-btn:hover { opacity: 1; border-color: var(--gold); box-shadow: 0 0 14px #D4AF3733; }
+
+    /* ── Visualizer ── */
+    #viz {
+      position: fixed; bottom: 1.6rem; left: 1.6rem;
+      z-index: 30; display: flex; gap: 3px; align-items: flex-end; height: 22px;
+    }
+    .viz-bar {
+      width: 3px; background: var(--gold); opacity: 0.4; border-radius: 1px;
+      animation: vizBounce var(--spd) ease-in-out infinite alternate;
+    }
+    @keyframes vizBounce {
+      0%   { height: var(--lo); }
+      100% { height: var(--hi); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="nebula"></div>
+<canvas id="star-canvas"></canvas>
+
+<!-- Shooting stars -->
+<div class="shooting-star" style="--delay:1s;  --dur:1.4s; top:9%;  left:7%;"></div>
+<div class="shooting-star" style="--delay:6s;  --dur:1.2s; top:20%; left:58%;"></div>
+<div class="shooting-star" style="--delay:12s; --dur:1.6s; top:5%;  left:32%;"></div>
+<div class="shooting-star" style="--delay:18s; --dur:1.3s; top:33%; left:14%;"></div>
+<div class="shooting-star" style="--delay:24s; --dur:1.5s; top:14%; left:72%;"></div>
+<div class="shooting-star" style="--delay:30s; --dur:1.2s; top:45%; left:42%;"></div>
+<div class="shooting-star" style="--delay:37s; --dur:1.4s; top:7%;  left:88%;"></div>
+
+<!-- Rose petals -->
+<div class="petal" style="--size:10px;--color:#C2185B55;--dur:12s;--delay:3s; --drift:80px;  left:15%;"></div>
+<div class="petal" style="--size:8px; --color:#F48FB155;--dur:15s;--delay:6s; --drift:-60px; left:35%;"></div>
+<div class="petal" style="--size:12px;--color:#8B000044;--dur:10s;--delay:1s; --drift:100px; left:60%;"></div>
+<div class="petal" style="--size:7px; --color:#C2185B44;--dur:18s;--delay:9s; --drift:-80px; left:80%;"></div>
+<div class="petal" style="--size:9px; --color:#F48FB166;--dur:13s;--delay:4s; --drift:50px;  left:50%;"></div>
+<div class="petal" style="--size:11px;--color:#D4AF3733;--dur:16s;--delay:11s;--drift:-40px; left:25%;"></div>
+<div class="petal" style="--size:8px; --color:#C2185B33;--dur:11s;--delay:7s; --drift:90px;  left:70%;"></div>
+<div class="petal" style="--size:10px;--color:#F48FB133;--dur:14s;--delay:2s; --drift:-70px; left:90%;"></div>
+
+<!-- Title card -->
+<div id="title-card">
+  <h1>A Message<br/>for Samantha</h1>
+  <p>♦ &nbsp; written in gold &nbsp; ♦</p>
+</div>
+
+<!-- Audio — swap src when you have the file -->
+<audio id="music" loop preload="auto">
+  <source src="audio/orchestra.mp3" type="audio/mpeg">
+</audio>
+
+<div id="vignette"></div>
+<div id="bottom-fade"></div>
+
+<!-- Crawl -->
+<div id="stage">
+  <div id="crawl">
+
+    <div class="verse">
+      <div class="verse-label">I</div>
+      <p>In the grand design of the cosmos, where the stars were forged in fire,<br>
+      The heavens paused their spinning to create a heart's desire.<br>
+      They took the gold of morning light and the depth of midnight blue,<br>
+      To craft the masterpiece of earth — the soul that lives in you.</p>
+      <br>
+      <p><strong>Samantha</strong>, you're the symphony that silence couldn't hold,<br>
+      A story etched in elegance, more precious than the gold.<br>
+      From the way you carry silence to the power in your stride,<br>
+      You're the rising of the ocean, the turning of the tide.</p>
+    </div>
+
+    <div class="divider">✦</div>
+
+    <div class="verse">
+      <div class="verse-label">II</div>
+      <p>Let us speak of how you're sculpted, every line a sacred grace,<br>
+      The architecture of a goddess mirrored in your face.<br>
+      Your eyes are deep observatories, holding wisdom, holding flame,<br>
+      Where intelligence is dancing and the shadows bow in shame.</p>
+      <br>
+      <p>They are level, they are piercing, they can read the hidden thought,<br>
+      With a clarity of spirit that can never be coerced or bought.<br>
+      And the curve of every feature, from the brow down to the chin,<br>
+      Is a map of pure perfection where the miracles begin.</p>
+    </div>
+
+    <div class="divider">✦</div>
+
+    <div class="verse">
+      <div class="verse-label">III</div>
+      <p>You are "drop-dead" in your presence, a lethal, lovely sight,<br>
+      A vision of such radiance you'd blind the very night.<br>
+      But the fire isn't hollow; it's a furnace fueled by mind,<br>
+      A sharp and soaring intellect, the rarest of its kind.</p>
+      <br>
+      <p>You navigate the chaos with a calm that's crystalline,<br>
+      A level-headed ruler of a kingdom so divine.<br>
+      You don't just walk through rooms, <strong>Samantha</strong> — you command the very air,<br>
+      Leaving every witness breathless, caught within your golden snare.</p>
+    </div>
+
+    <div class="divider">✦</div>
+
+    <div class="verse">
+      <div class="verse-label">IV</div>
+      <p>There is strength within your softness, like a blade wrapped up in silk,<br>
+      A spirit forged in iron, yet as pure as mountain milk.<br>
+      You are caring, you are constant, you're the healer and the light,<br>
+      The hand that holds the lantern through the hollow of the night.</p>
+      <br>
+      <p>Every gesture is a poem, every word is like a song,<br>
+      Proving beauty isn't fleeting when the character is strong.<br>
+      You are the peak of womanhood, the summit and the core,<br>
+      And every time I see you, I find reason to see more.</p>
+    </div>
+
+    <div class="divider">✦</div>
+
+    <div class="verse">
+      <div class="verse-label">V</div>
+      <p>So let this be the saga, let the ink forever bleed,<br>
+      To document the glory of the only girl I'll need.<br>
+      Passionate and peerless, you're the fire in the veins,<br>
+      The sun that breaks the clouds and the scent of summer rains.</p>
+      <br>
+      <p><strong>Samantha</strong>, you're the legend, you're the breathtaking truth,<br>
+      The wisdom of the ages and the vibrant spark of youth.<br>
+      If the world is but a canvas, you're the stroke that made it grand,<br>
+      The most beautiful creation ever walked upon the land.</p>
+    </div>
+
+    <div class="finale">
+      <p>— written for you,<br>with everything I have —</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Controls -->
+<div id="controls">
+  <button class="ctrl-btn" id="btn-voice-upload" onclick="document.getElementById('voice-upload').click()">🎙 Load Narration</button>
+  <input type="file" id="voice-upload" accept="audio/*" style="display:none" onchange="loadVoice(event)">
+  <button class="ctrl-btn" id="btn-music" onclick="toggleMusic()">♪ Music</button>
+</div>
+
+<!-- Visualizer -->
+<div id="viz">
+  <div class="viz-bar" style="--lo:4px;--hi:14px;--spd:0.5s"></div>
+  <div class="viz-bar" style="--lo:6px;--hi:20px;--spd:0.7s"></div>
+  <div class="viz-bar" style="--lo:3px;--hi:16px;--spd:0.4s"></div>
+  <div class="viz-bar" style="--lo:8px;--hi:22px;--spd:0.6s"></div>
+  <div class="viz-bar" style="--lo:4px;--hi:18px;--spd:0.8s"></div>
+  <div class="viz-bar" style="--lo:5px;--hi:14px;--spd:0.5s"></div>
+  <div class="viz-bar" style="--lo:7px;--hi:20px;--spd:0.65s"></div>
+  <div class="viz-bar" style="--lo:3px;--hi:12px;--spd:0.45s"></div>
+</div>
+
+<script>
+  // ── Stars ──────────────────────────────────────────
+  const canvas = document.getElementById('star-canvas')
+  const ctx    = canvas.getContext('2d')
+  let stars    = []
+
+  function resizeCanvas() {
+    canvas.width  = window.innerWidth
+    canvas.height = window.innerHeight
+    stars = Array.from({ length: 180 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.3 + 0.2,
+      opacity: Math.random() * 0.55 + 0.1,
+      speed: Math.random() * 0.012 + 0.004,
+      dir: Math.random() > 0.5 ? 1 : -1,
+      pink: Math.random() > 0.82
+    }))
+  }
+  resizeCanvas()
+  window.addEventListener('resize', resizeCanvas)
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    stars.forEach(s => {
+      s.opacity += s.speed * s.dir
+      if (s.opacity > 0.75 || s.opacity < 0.08) s.dir *= -1
+      ctx.beginPath()
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+      ctx.fillStyle = s.pink
+        ? `rgba(244,143,177,${s.opacity})`
+        : `rgba(255,240,245,${s.opacity})`
+      ctx.fill()
+    })
+    requestAnimationFrame(drawStars)
+  }
+  drawStars()
+
+  // ── Music ──────────────────────────────────────────
+  const music = document.getElementById('music')
+  let musicOn = false
+
+  function startMusic() {
+    music.volume = 0
+    music.play().then(() => {
+      musicOn = true
+      let v = 0
+      const fade = setInterval(() => {
+        v = Math.min(v + 0.012, 0.5)
+        music.volume = v
+        if (v >= 0.5) clearInterval(fade)
+      }, 180)
+    }).catch(() => {})
+  }
+
+  // Try autoplay; fallback to first click
+  setTimeout(startMusic, 800)
+  document.addEventListener('click', function once() {
+    if (!musicOn) startMusic()
+    document.removeEventListener('click', once)
+  })
+
+  function toggleMusic() {
+    const btn = document.getElementById('btn-music')
+    if (music.paused) {
+      music.play(); musicOn = true; btn.textContent = '♪ Music'
+    } else {
+      music.pause(); musicOn = false; btn.textContent = '♪ Paused'
+    }
+  }
+
+  // ── Narration (user-provided audio file) ──────────
+  let narration = null
+
+  function loadVoice(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    if (narration) { narration.pause(); narration = null }
+    narration = new Audio(URL.createObjectURL(file))
+    narration.volume = 1
+    // Duck music
+    if (musicOn) music.volume = 0.15
+    narration.play()
+    document.getElementById('btn-voice-upload').textContent = '🎙 Playing...'
+    narration.onended = () => {
+      document.getElementById('btn-voice-upload').textContent = '🎙 Load Narration'
+      if (musicOn) {
+        let v = music.volume
+        const fade = setInterval(() => {
+          v = Math.min(v + 0.01, 0.5)
+          music.volume = v
+          if (v >= 0.5) clearInterval(fade)
+        }, 150)
+      }
+    }
+  }
+</script>
+</body>
+</html>
