@@ -189,25 +189,6 @@
       0%   { height: var(--lo); }
       100% { height: var(--hi); }
     }
-  
-    #begin-overlay {
-      position: fixed; inset: 0; z-index: 9999;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.82);
-      cursor: pointer;
-      pointer-events: all;
-      transition: opacity 0.8s ease;
-    }
-    #begin-overlay.hidden { opacity: 0; pointer-events: none; }
-    #begin-overlay h2 {
-      font-family: 'Cinzel Decorative', serif;
-      color: #D4AF37;
-      font-size: clamp(1.2rem, 4vw, 2rem);
-      letter-spacing: 0.15em;
-      text-shadow: 0 0 20px #D4AF3799;
-      animation: pulse 2s ease-in-out infinite;
-    }
     @keyframes pulse {
       0%, 100% { opacity: 0.6; } 50% { opacity: 1; }
     }
@@ -217,9 +198,6 @@
 <body>
 
 <div id="nebula"></div>
-<div id="begin-overlay">
-  <h2>✦ Tap to Begin ✦</h2>
-</div>
 <canvas id="star-canvas"></canvas>
 
 <!-- Shooting stars -->
@@ -394,23 +372,18 @@
 
   // ── Music & Start ────────────────────────────────
   const music = document.getElementById('music')
-  const overlay = document.getElementById('begin-overlay')
   const crawlEl = document.getElementById('crawl')
   music.volume = 0.75
 
+  let started = false
   function beginExperience() {
-    overlay.classList.add('hidden')
-    setTimeout(() => overlay.remove(), 900)
+    if (started) return
+    started = true
     music.play().catch(() => {})
     crawlEl.style.animationPlayState = 'running'
   }
 
-  let started = false
-  function handleStart(e) {
-    if (started) return
-    started = true
-    e.preventDefault()
-    beginExperience()
-  }
-  overlay.addEventListener('click', handleStart)
-  overlay.addEventListener('touchend', handleStart)
+  // Trigger on any first interaction — tap, click, keypress, scroll
+  ['click','touchstart','keydown','scroll'].forEach(evt =>
+    document.addEventListener(evt, beginExperience, { once: true, passive: true })
+  )
