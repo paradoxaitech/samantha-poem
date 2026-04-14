@@ -47,7 +47,7 @@
       padding-bottom: 32vh;
       transform-origin: bottom center;
       transform: rotateX(22deg);
-      animation: crawlScroll 229s linear 11s forwards;
+      animation: crawlScroll 229s linear 0s forwards; animation-play-state: paused;
       text-align: center;
     }
     @keyframes crawlScroll {
@@ -180,14 +180,18 @@
   }
   drawStars()
 
-  // Music — unlock AudioContext then play on first interaction
+  // Music plays on first interaction, crawl starts 11s later
   const music = document.getElementById('music')
+  const crawlEl = document.getElementById('crawl')
   music.volume = 0.75
   let musicStarted = false
   function tryPlay() {
     if (musicStarted) return
     musicStarted = true
     music.play().catch(() => {})
+    setTimeout(() => {
+      crawlEl.style.animationPlayState = 'running'
+    }, 11000)
   }
   document.addEventListener('touchend', tryPlay)
   document.addEventListener('click', tryPlay)
