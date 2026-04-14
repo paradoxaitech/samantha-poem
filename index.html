@@ -187,11 +187,7 @@
   function tryPlay() {
     if (musicStarted) return
     musicStarted = true
-    // Unlock WebAudio context for iOS
-    const ctx = new (window.AudioContext || window.webkitAudioContext)()
-    ctx.resume().then(() => {
-      music.play().catch(() => {})
-    })
+    music.play().catch(() => {})
   }
   document.addEventListener('touchend', tryPlay)
   document.addEventListener('click', tryPlay)
