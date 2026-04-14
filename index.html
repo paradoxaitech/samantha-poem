@@ -174,22 +174,6 @@
     }
 
     /* ── Controls ── */
-    #controls {
-      position: fixed; bottom: 1.4rem; right: 1.4rem;
-      z-index: 30; display: flex; gap: 0.6rem; align-items: center;
-    }
-    .ctrl-btn {
-      background: rgba(13,0,5,0.85);
-      border: 1px solid #D4AF3744;
-      color: var(--gold);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.85rem; letter-spacing: 0.12em;
-      padding: 0.45rem 0.9rem;
-      cursor: pointer; border-radius: 2px;
-      transition: all 0.3s; opacity: 0.65;
-      backdrop-filter: blur(4px);
-    }
-    .ctrl-btn:hover { opacity: 1; border-color: var(--gold); box-shadow: 0 0 14px #D4AF3733; }
 
     /* ── Visualizer ── */
     #viz {
@@ -237,7 +221,7 @@
 </div>
 
 <!-- Audio — swap src when you have the file -->
-<audio id="music" loop preload="auto">
+<audio id="music" preload="auto">
   <source src="audio/orchestra.mp3" type="audio/mpeg">
 </audio>
 
@@ -329,11 +313,7 @@
 </div>
 
 <!-- Controls -->
-<div id="controls">
-  <button class="ctrl-btn" id="btn-voice-upload" onclick="document.getElementById('voice-upload').click()">🎙 Load Narration</button>
-  <input type="file" id="voice-upload" accept="audio/*" style="display:none" onchange="loadVoice(event)">
-  <button class="ctrl-btn" id="btn-music" onclick="toggleMusic()">♪ Music</button>
-</div>
+
 
 <!-- Visualizer -->
 <div id="viz">
@@ -387,52 +367,20 @@
 
   // ── Music ──────────────────────────────────────────
   const music = document.getElementById('music')
-  let musicOn = false
+  music.volume = 0.75
 
-  function startMusic() {
-    music.volume = 0
-    music.play().then(() => {
-      musicOn = true
-      let v = 0
-      const fade = setInterval(() => {
-        v = Math.min(v + 0.012, 0.5)
-        music.volume = v
-        if (v >= 0.5) clearInterval(fade)
-      }, 180)
-    }).catch(() => {})
-  }
-
-  // Try autoplay; fallback to first click
-  setTimeout(startMusic, 800)
+  // Auto-play on first user interaction (browser policy)
   document.addEventListener('click', function once() {
-    if (!musicOn) startMusic()
+    music.play()
     document.removeEventListener('click', once)
-  })
+  }, { once: true })
+  document.addEventListener('touchstart', function once() {
+    music.play()
+    document.removeEventListener('touchstart', once)
+  }, { once: true })
 
-  function toggleMusic() {
-    const btn = document.getElementById('btn-music')
-    if (music.paused) {
-      music.play(); musicOn = true; btn.textContent = '♪ Music'
-    } else {
-      music.pause(); musicOn = false; btn.textContent = '♪ Paused'
-    }
-  }
-
-  // ── Narration (user-provided audio file) ──────────
-  let narration = null
-
-  function loadVoice(e) {
-    const file = e.target.files[0]
-    if (!file) return
-    if (narration) { narration.pause(); narration = null }
-    narration = new Audio(URL.createObjectURL(file))
-    narration.volume = 1
-    // Duck music
-    if (musicOn) music.volume = 0.15
-    narration.play()
-    document.getElementById('btn-voice-upload').textContent = '🎙 Playing...'
-    narration.onended = () => {
-      document.getElementById('btn-voice-upload').textContent = '🎙 Load Narration'
+  // Try immediate autoplay
+  music.play().catch(() => {})
       if (musicOn) {
         let v = music.volume
         const fade = setInterval(() => {
