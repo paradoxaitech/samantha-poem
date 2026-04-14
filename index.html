@@ -118,9 +118,7 @@
       padding-bottom: 32vh;
       transform-origin: bottom center;
       transform: rotateX(22deg) translateY(100vh);
-      opacity: 0;
-      animation: crawlScroll 232.2s linear 7.8s forwards;
-      animation-play-state: paused;
+            animation: crawlScroll 232.2s linear 7.8s forwards;
     }
     @keyframes crawlScroll {
       0%   { transform: rotateX(22deg) translateY(100vh); opacity: 1; }
@@ -375,15 +373,16 @@
   const crawlEl = document.getElementById('crawl')
   music.volume = 0.75
 
-  let started = false
-  function beginExperience() {
-    if (started) return
-    started = true
-    music.play().catch(() => {})
-    crawlEl.style.animationPlayState = 'running'
-  }
+  // Start crawl immediately — CSS animation handles it
+  crawlEl.style.animationPlayState = 'running'
 
-  // Trigger on any first interaction — tap, click, keypress, scroll
+  // Start music on first user interaction (browser autoplay policy)
+  let musicStarted = false
+  function startMusic() {
+    if (musicStarted) return
+    musicStarted = true
+    music.play().catch(() => {})
+  }
   ['click','touchstart','keydown','scroll'].forEach(evt =>
-    document.addEventListener(evt, beginExperience, { once: true, passive: true })
+    document.addEventListener(evt, startMusic, { once: true, passive: true })
   )
