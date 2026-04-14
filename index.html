@@ -83,14 +83,10 @@
       width: min(700px, 92vw);
       padding-bottom: 0;
       transform-origin: bottom center;
-      animation: crawlScroll 230s linear 0s forwards;
-      animation-play-state: paused;
+      will-change: transform;
       text-align: center;
     }
-    @keyframes crawlScroll {
-      from { transform: rotateX(8deg) translateY(100vh); opacity: 1; }
-      to   { transform: rotateX(8deg) translateY(-120vh); opacity: 1; }
-    }
+
     #crawl h1 {
       font-family: 'Cinzel Decorative', serif;
       font-size: clamp(2rem, 6vw, 3rem);
@@ -306,15 +302,36 @@
   music.volume  = 0.75
 
   let started = false
+
   function beginExperience() {
     if (started) return
     started = true
     music.play().catch(() => {})
+
+    // After 10s intro, fade welcome and start crawl
     setTimeout(() => {
       welcome.classList.add('fade-out')
       stage.classList.add('visible')
+
       setTimeout(() => {
-        crawl.style.animationPlayState = 'running'
+        // Calculate exact travel distance: crawl must scroll its full height + viewport height
+        const totalDistance = crawl.scrollHeight + window.innerHeight
+        const duration = 230000 // 230 seconds in ms
+
+        let startTime = null
+        // Start position: bottom of viewport
+        crawl.style.transform = 'rotateX(8deg) translateY(' + window.innerHeight + 'px)'
+
+        function step(timestamp) {
+          if (!startTime) startTime = timestamp
+          const elapsed = timestamp - startTime
+          const progress = Math.min(elapsed / duration, 1)
+          const y = window.innerHeight - (progress * totalDistance)
+          crawl.style.transform = 'rotateX(8deg) translateY(' + y + 'px)'
+          if (progress < 1) requestAnimationFrame(step)
+        }
+
+        requestAnimationFrame(step)
       }, 2000)
     }, 10000)
   }
