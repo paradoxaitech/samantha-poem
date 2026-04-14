@@ -33,7 +33,6 @@
     }
     #star-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 
-    /* Welcome note */
     #welcome {
       position: fixed; inset: 0; z-index: 10;
       display: flex; flex-direction: column;
@@ -71,11 +70,10 @@
       50% { opacity: 0.7; }
     }
 
-    /* Stage & crawl */
     #stage {
       position: fixed; inset: 0; z-index: 2;
       display: flex; align-items: flex-start; justify-content: center;
-      perspective: 380px;
+      perspective: 600px;
       overflow: hidden;
       opacity: 0;
       transition: opacity 2s ease;
@@ -90,12 +88,12 @@
       text-align: center;
     }
     @keyframes crawlScroll {
-      from { transform: rotateX(22deg) translateY(150vh); opacity: 1; }
-      to   { transform: rotateX(22deg) translateY(-300%); opacity: 1; }
+      from { transform: rotateX(8deg) translateY(150vh); opacity: 1; }
+      to   { transform: rotateX(8deg) translateY(-300%); opacity: 1; }
     }
     #crawl h1 {
       font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(1.95rem, 5.25vw, 3rem);
+      font-size: clamp(2rem, 6vw, 3rem);
       color: var(--gold);
       letter-spacing: 0.12em;
       margin-bottom: 2.4rem;
@@ -103,14 +101,14 @@
     }
     .stanza { margin-bottom: 2rem; line-height: 2; }
     .stanza p {
-      font-size: clamp(2.85rem, 7.2vw, 3.6rem);
+      font-size: clamp(1.4rem, 6vw, 2.4rem);
       font-style: italic;
       color: var(--parchment);
       text-shadow: 0 0 8px #F48FB155;
     }
     .verse-label {
       font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(1.05rem, 2.7vw, 1.35rem);
+      font-size: clamp(1rem, 2.7vw, 1.35rem);
       color: var(--gold);
       letter-spacing: 0.3em;
       opacity: 0.5;
@@ -142,14 +140,12 @@
 <div id="fade-top"></div>
 <div id="fade-bottom"></div>
 
-<!-- Welcome note -->
 <div id="welcome">
   <h1>For Samantha</h1>
   <p>A poem written in the stars,<br>dedicated to you.</p>
   <div class="tap-hint">✦ Tap to begin ✦</div>
 </div>
 
-<!-- Crawl -->
 <div id="stage">
   <div id="crawl">
     <h1>For Samantha</h1>
