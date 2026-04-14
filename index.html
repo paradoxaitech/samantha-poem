@@ -120,6 +120,7 @@
       transform: rotateX(22deg) translateY(100vh);
       opacity: 0;
       animation: crawlScroll 232.2s linear 7.8s forwards;
+      animation-play-state: paused;
     }
     @keyframes crawlScroll {
       0%   { transform: rotateX(22deg) translateY(100vh); opacity: 1; }
@@ -188,6 +189,28 @@
       0%   { height: var(--lo); }
       100% { height: var(--hi); }
     }
+  
+    #begin-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.82);
+      cursor: pointer;
+      transition: opacity 0.8s ease;
+    }
+    #begin-overlay.hidden { opacity: 0; pointer-events: none; }
+    #begin-overlay h2 {
+      font-family: 'Cinzel Decorative', serif;
+      color: #D4AF37;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      letter-spacing: 0.15em;
+      text-shadow: 0 0 20px #D4AF3799;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; } 50% { opacity: 1; }
+    }
+
   </style>
 </head>
 <body>
@@ -365,32 +388,18 @@
   }
   drawStars()
 
-  // ── Music ──────────────────────────────────────────
+  // ── Music & Start ────────────────────────────────
   const music = document.getElementById('music')
+  const overlay = document.getElementById('begin-overlay')
+  const crawlEl = document.getElementById('crawl')
   music.volume = 0.75
 
-  // Auto-play on first user interaction (browser policy)
-  document.addEventListener('click', function once() {
-    music.play()
-    document.removeEventListener('click', once)
-  }, { once: true })
-  document.addEventListener('touchstart', function once() {
-    music.play()
-    document.removeEventListener('touchstart', once)
-  }, { once: true })
-
-  // Try immediate autoplay
-  music.play().catch(() => {})
-      if (musicOn) {
-        let v = music.volume
-        const fade = setInterval(() => {
-          v = Math.min(v + 0.01, 0.5)
-          music.volume = v
-          if (v >= 0.5) clearInterval(fade)
-        }, 150)
-      }
-    }
+  function beginExperience() {
+    overlay.classList.add('hidden')
+    setTimeout(() => overlay.remove(), 900)
+    music.play().catch(() => {})
+    crawlEl.style.animationPlayState = 'running'
   }
-</script>
-</body>
-</html>
+
+  overlay.addEventListener('click', beginExperience)
+  overlay.addEventListener('touchstart', beginExperience)
