@@ -191,11 +191,12 @@
     }
   
     #begin-overlay {
-      position: fixed; inset: 0; z-index: 100;
+      position: fixed; inset: 0; z-index: 9999;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       background: rgba(0,0,0,0.82);
       cursor: pointer;
+      pointer-events: all;
       transition: opacity 0.8s ease;
     }
     #begin-overlay.hidden { opacity: 0; pointer-events: none; }
@@ -404,5 +405,9 @@
     crawlEl.style.animationPlayState = 'running'
   }
 
-  overlay.addEventListener('click', beginExperience)
-  overlay.addEventListener('touchstart', beginExperience)
+  ['click', 'touchend'].forEach(evt =>
+    overlay.addEventListener(evt, function(e) {
+      e.preventDefault()
+      beginExperience()
+    }, { once: true })
+  )
