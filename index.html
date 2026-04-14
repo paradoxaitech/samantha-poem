@@ -180,17 +180,21 @@
   }
   drawStars()
 
-  // Music — start on first interaction
+  // Music — unlock AudioContext then play on first interaction
   const music = document.getElementById('music')
   music.volume = 0.75
   let musicStarted = false
   function tryPlay() {
     if (musicStarted) return
     musicStarted = true
-    music.play().catch(() => {})
+    // Unlock WebAudio context for iOS
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    ctx.resume().then(() => {
+      music.play().catch(() => {})
+    })
   }
+  document.addEventListener('touchend', tryPlay)
   document.addEventListener('click', tryPlay)
-  document.addEventListener('touchstart', tryPlay)
   document.addEventListener('keydown', tryPlay)
 </script>
 </body>
