@@ -8,9 +8,6 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --crimson: #8B0000;
-      --rose: #C2185B;
-      --blush: #F48FB1;
       --gold: #D4AF37;
       --parchment: #FFF0F5;
       --deep: #0d0005;
@@ -31,23 +28,65 @@
       animation: nebulaShift 30s ease-in-out infinite alternate;
     }
     @keyframes nebulaShift {
-      0%   { transform: scale(1) translateX(0) translateY(0); }
-      50%  { transform: scale(1.08) translateX(-2%) translateY(1%); }
-      100% { transform: scale(1.1) translateX(1%) translateY(-1%); }
+      0%   { transform: scale(1) translateX(0); }
+      100% { transform: scale(1.1) translateX(1%); }
     }
     #star-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+    /* Welcome note */
+    #welcome {
+      position: fixed; inset: 0; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 2rem;
+      opacity: 1;
+      transition: opacity 2s ease;
+    }
+    #welcome.fade-out { opacity: 0; pointer-events: none; }
+    #welcome h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.6rem, 5vw, 3rem);
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-shadow: 0 0 30px #D4AF3799;
+      margin-bottom: 1.2rem;
+    }
+    #welcome p {
+      font-size: clamp(1rem, 2.8vw, 1.4rem);
+      font-style: italic;
+      color: var(--parchment);
+      opacity: 0.85;
+      line-height: 1.8;
+    }
+    #welcome .tap-hint {
+      margin-top: 2.5rem;
+      font-size: clamp(0.8rem, 2vw, 1rem);
+      opacity: 0.45;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Stage & crawl */
     #stage {
       position: fixed; inset: 0; z-index: 2;
       display: flex; align-items: flex-end; justify-content: center;
       perspective: 380px;
       overflow: hidden;
+      opacity: 0;
+      transition: opacity 2s ease;
     }
+    #stage.visible { opacity: 1; }
     #crawl {
       width: min(700px, 92vw);
       padding-bottom: 32vh;
       transform-origin: bottom center;
-      transform: rotateX(22deg);
-      animation: crawlScroll 229s linear 0s forwards; animation-play-state: paused;
+      animation: crawlScroll 229s linear 0s forwards;
+      animation-play-state: paused;
       text-align: center;
     }
     @keyframes crawlScroll {
@@ -56,18 +95,27 @@
     }
     #crawl h1 {
       font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(1.4rem, 4vw, 2.2rem);
+      font-size: clamp(1.3rem, 3.5vw, 2rem);
       color: var(--gold);
       letter-spacing: 0.12em;
       margin-bottom: 2.4rem;
       text-shadow: 0 0 18px #D4AF3799;
     }
-    .stanza { margin-bottom: 2.2rem; line-height: 2; }
+    .stanza { margin-bottom: 2rem; line-height: 2; }
     .stanza p {
-      font-size: clamp(1rem, 2.6vw, 1.25rem);
+      font-size: clamp(0.95rem, 2.4vw, 1.2rem);
       font-style: italic;
       color: var(--parchment);
       text-shadow: 0 0 8px #F48FB155;
+    }
+    .verse-label {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+      color: var(--gold);
+      letter-spacing: 0.3em;
+      opacity: 0.5;
+      margin: 2rem 0 1rem;
+      text-transform: uppercase;
     }
     .divider {
       color: var(--gold);
@@ -77,12 +125,12 @@
       opacity: 0.6;
     }
     #fade-top {
-      position: fixed; top: 0; left: 0; right: 0; height: 18vh; z-index: 3;
+      position: fixed; top: 0; left: 0; right: 0; height: 18vh; z-index: 4;
       background: linear-gradient(to bottom, var(--deep) 0%, transparent 100%);
       pointer-events: none;
     }
     #fade-bottom {
-      position: fixed; bottom: 0; left: 0; right: 0; height: 22vh; z-index: 3;
+      position: fixed; bottom: 0; left: 0; right: 0; height: 22vh; z-index: 4;
       background: linear-gradient(to top, var(--deep) 0%, transparent 100%);
       pointer-events: none;
     }
@@ -94,62 +142,138 @@
 <div id="fade-top"></div>
 <div id="fade-bottom"></div>
 
+<!-- Welcome note -->
+<div id="welcome">
+  <h1>For Samantha</h1>
+  <p>A poem written in the stars,<br>dedicated to you.</p>
+  <div class="tap-hint">✦ Tap to begin ✦</div>
+</div>
+
+<!-- Crawl -->
 <div id="stage">
   <div id="crawl">
     <h1>For Samantha</h1>
 
     <div class="stanza">
-      <p>Before the world had learned your name,</p>
-      <p>the stars conspired and arranged</p>
-      <p>a soul so rare, so wildly bright,</p>
-      <p>they set her loose on March the First.</p>
+      <p>In the grand design of the cosmos,</p>
+      <p>where the stars were forged in fire,</p>
+      <p>The heavens paused their spinning to</p>
+      <p>create a heart's desire.</p>
+      <p>They took the gold of morning light</p>
+      <p>and the depth of midnight blue,</p>
+      <p>To craft the masterpiece of earth —</p>
+      <p>the soul that lives in you.</p>
     </div>
-    <div class="divider">✦ ✦ ✦</div>
     <div class="stanza">
-      <p>You are the warmth in winter rooms,</p>
-      <p>the laugh that breaks a heavy air,</p>
-      <p>the kind of person people mean</p>
-      <p>when they say someone really cares.</p>
+      <p>Samantha, you're the symphony that</p>
+      <p>silence couldn't hold,</p>
+      <p>A story etched in elegance, more</p>
+      <p>precious than the gold.</p>
+      <p>From the way you carry silence to the</p>
+      <p>power in your stride,</p>
+      <p>You're the rising of the ocean,</p>
+      <p>the turning of the tide.</p>
     </div>
-    <div class="divider">✦ ✦ ✦</div>
+
+    <div class="verse-label">Verse 2</div>
     <div class="stanza">
-      <p>The universe runs on math and fire —</p>
-      <p>on gravity and ancient light —</p>
-      <p>but somewhere in its grand design</p>
-      <p>it paused to get you exactly right.</p>
+      <p>Let us speak of how you're sculpted,</p>
+      <p>every line a sacred grace,</p>
+      <p>The architecture of a goddess</p>
+      <p>mirrored in your face.</p>
+      <p>Your eyes are deep observatories</p>
+      <p>holding wisdom, holding flame,</p>
+      <p>Where intelligence is dancing and</p>
+      <p>the shadows bow in shame.</p>
     </div>
-    <div class="divider">✦ ✦ ✦</div>
     <div class="stanza">
-      <p>Your number is the six — the heart,</p>
-      <p>the healer, keeper of the flame,</p>
-      <p>the one who shows up, holds the door,</p>
-      <p>and loves without a thought of gain.</p>
+      <p>They are level, they are piercing,</p>
+      <p>they can read the hidden thought,</p>
+      <p>With a clarity of spirit that can never</p>
+      <p>be coerced or bought.</p>
+      <p>And the curve of every feature,</p>
+      <p>from the brow down to the chin,</p>
+      <p>Is a map of pure perfection</p>
+      <p>where the miracles begin.</p>
     </div>
-    <div class="divider">✦ ✦ ✦</div>
+
+    <div class="verse-label">Verse 3</div>
     <div class="stanza">
-      <p>So here is what the cosmos knows</p>
-      <p>and wanted written in the sky:</p>
-      <p>the world is genuinely better</p>
-      <p>because you chose to come alive.</p>
+      <p>You are "drop-dead" in your presence,</p>
+      <p>a lethal, lovely sight,</p>
+      <p>A vision of such radiance</p>
+      <p>you'd blind the very night.</p>
+      <p>But the fire isn't hollow, it's a furnace</p>
+      <p>fueled by mind,</p>
+      <p>A sharp and soaring intellect —</p>
+      <p>the rarest of its kind.</p>
     </div>
-    <div class="divider">✦ ✦ ✦</div>
     <div class="stanza">
-      <p>Happy Birthday, Samantha.</p>
-      <p>You are absolute.</p>
-      <p>You are beauty.</p>
-      <p>You are loved.</p>
+      <p>You navigate the chaos with a calm</p>
+      <p>that's crystalline,</p>
+      <p>A level-headed ruler of a kingdom</p>
+      <p>so divine.</p>
+      <p>You don't just walk through rooms,</p>
+      <p>Samantha — you command the very air,</p>
+      <p>Leaving every witness breathless.</p>
     </div>
+
+    <div class="verse-label">Verse 4</div>
+    <div class="stanza">
+      <p>There is strength within your softness,</p>
+      <p>like a blade wrapped up in silk,</p>
+      <p>A spirit forged in iron,</p>
+      <p>yet as pure as mountain milk.</p>
+      <p>You are caring, you are constant —</p>
+      <p>caught within your golden snare,</p>
+      <p>You're the healer and the light,</p>
+      <p>the hand that holds the lantern through the night.</p>
+    </div>
+    <div class="stanza">
+      <p>Every gesture is a poem,</p>
+      <p>every word a song,</p>
+      <p>Proving beauty isn't fleeting</p>
+      <p>when the character is strong.</p>
+      <p>You are the peak of womanhood,</p>
+      <p>the summit and the core,</p>
+      <p>And every time I see you,</p>
+      <p>I find reason to see more.</p>
+    </div>
+
+    <div class="verse-label">Verse 5</div>
+    <div class="stanza">
+      <p>So let this be the saga,</p>
+      <p>let the ink forever bleed,</p>
+      <p>To document the glory</p>
+      <p>of the only girl I'll need.</p>
+      <p>Passionate and peerless,</p>
+      <p>you're the fire in the veins,</p>
+      <p>The sun that breaks the clouds</p>
+      <p>and the scent of summer rains.</p>
+    </div>
+    <div class="stanza">
+      <p>Samantha, you're the legend,</p>
+      <p>you're the breathtaking truth,</p>
+      <p>The wisdom of the ages</p>
+      <p>and the vibrant spark of youth.</p>
+      <p>If the world is but a canvas,</p>
+      <p>you're the stroke that made it grand,</p>
+      <p>The most beautiful creation</p>
+      <p>ever to have walked upon the land.</p>
+    </div>
+
+    <div class="divider">✦ ✦ ✦</div>
   </div>
 </div>
 
-<audio id="music" preload="auto" loop>
+<audio id="music" preload="auto">
   <source src="audio/orchestra.mp3" type="audio/mpeg">
 </audio>
 
 <script>
   // Stars
   const canvas = document.getElementById('star-canvas')
-  const ctx = canvas.getContext('2d')
+  const starCtx = canvas.getContext('2d')
   let stars = []
   function resizeCanvas() {
     canvas.width = window.innerWidth
@@ -167,35 +291,48 @@
   resizeCanvas()
   window.addEventListener('resize', resizeCanvas)
   function drawStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    starCtx.clearRect(0, 0, canvas.width, canvas.height)
     stars.forEach(s => {
       s.opacity += s.speed * s.dir
       if (s.opacity > 0.75 || s.opacity < 0.08) s.dir *= -1
-      ctx.beginPath()
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-      ctx.fillStyle = s.pink ? `rgba(244,143,177,${s.opacity})` : `rgba(255,240,245,${s.opacity})`
-      ctx.fill()
+      starCtx.beginPath()
+      starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+      starCtx.fillStyle = s.pink ? `rgba(244,143,177,${s.opacity})` : `rgba(255,240,245,${s.opacity})`
+      starCtx.fill()
     })
     requestAnimationFrame(drawStars)
   }
   drawStars()
 
-  // Music plays on first interaction, crawl starts 11s later
-  const music = document.getElementById('music')
-  const crawlEl = document.getElementById('crawl')
-  music.volume = 0.75
-  let musicStarted = false
-  function tryPlay() {
-    if (musicStarted) return
-    musicStarted = true
+  // Experience flow
+  const music   = document.getElementById('music')
+  const welcome = document.getElementById('welcome')
+  const stage   = document.getElementById('stage')
+  const crawl   = document.getElementById('crawl')
+  music.volume  = 0.75
+
+  let started = false
+  function beginExperience() {
+    if (started) return
+    started = true
+
+    // Play music immediately
     music.play().catch(() => {})
+
+    // At 10s: fade out welcome, fade in stage
     setTimeout(() => {
-      crawlEl.style.animationPlayState = 'running'
-    }, 11000)
+      welcome.classList.add('fade-out')
+      stage.classList.add('visible')
+      // After fade transition (2s), start crawl
+      setTimeout(() => {
+        crawl.style.animationPlayState = 'running'
+      }, 2000)
+    }, 10000)
   }
-  document.addEventListener('touchend', tryPlay)
-  document.addEventListener('click', tryPlay)
-  document.addEventListener('keydown', tryPlay)
+
+  document.addEventListener('click', beginExperience)
+  document.addEventListener('touchend', beginExperience)
+  document.addEventListener('keydown', beginExperience)
 </script>
 </body>
 </html>
