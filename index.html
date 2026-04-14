@@ -405,9 +405,12 @@
     crawlEl.style.animationPlayState = 'running'
   }
 
-  ['click', 'touchend'].forEach(evt =>
-    overlay.addEventListener(evt, function(e) {
-      e.preventDefault()
-      beginExperience()
-    }, { once: true })
-  )
+  let started = false
+  function handleStart(e) {
+    if (started) return
+    started = true
+    e.preventDefault()
+    beginExperience()
+  }
+  overlay.addEventListener('click', handleStart)
+  overlay.addEventListener('touchend', handleStart)
